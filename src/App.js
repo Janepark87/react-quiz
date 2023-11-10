@@ -9,6 +9,9 @@ import Question from './components/quiz/Question';
 const initialState = {
 	questions: [],
 	status: 'loading', // error, ready, active, finished
+	index: 0,
+	answer: null,
+	scores: 0,
 };
 
 function reducer(state, action) {
@@ -29,13 +32,20 @@ function reducer(state, action) {
 				...state,
 				status: 'active',
 			};
+		case 'newAnswer':
+			const currentQuestion = state.questions.at(state.index);
+			return {
+				...state,
+				answer: action.payload,
+				scores: action.payload === currentQuestion.correctOption ? state.scores + currentQuestion.points : state.scores,
+			};
 		default:
 			throw new Error('Error: unknown action');
 	}
 }
 
 export default function App() {
-	const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
+	const [{ questions, status, index, answer }, dispatch] = useReducer(reducer, initialState);
 	const numQuestions = questions.length;
 
 	useEffect(() => {
@@ -53,7 +63,7 @@ export default function App() {
 				{status === 'loading' && <Loader />}
 				{status === 'error' && <Error />}
 				{status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
-				{status === 'active' && <Question />}
+				{status === 'active' && <Question question={questions[index]} answer={answer} dispatch={dispatch} />}
 			</Main>
 		</div>
 	);
