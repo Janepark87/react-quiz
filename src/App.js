@@ -7,6 +7,7 @@ import StartScreen from './components/quiz/StartScreen';
 import Question from './components/quiz/Question';
 import NextButton from './components/quiz/NextButton';
 import ProgressBar from './components/quiz/ProgressBar';
+import FinishedScreen from './components/quiz/FinishedScreen';
 
 const initialState = {
 	questions: [],
@@ -14,6 +15,7 @@ const initialState = {
 	index: 0,
 	answer: null,
 	scores: 0,
+	highScore: 0,
 };
 
 function reducer(state, action) {
@@ -47,13 +49,19 @@ function reducer(state, action) {
 				index: state.index + 1,
 				answer: null,
 			};
+		case 'finishQuiz':
+			return {
+				...state,
+				status: 'finished',
+				highScore: state.scores > state.highScore ? state.scores : state.highScore,
+			};
 		default:
 			throw new Error('Error: unknown action');
 	}
 }
 
 export default function App() {
-	const [{ questions, status, index, answer, scores }, dispatch] = useReducer(reducer, initialState);
+	const [{ questions, status, index, answer, scores, highScore }, dispatch] = useReducer(reducer, initialState);
 	const numQuestions = questions.length;
 	const totalScores = questions.reduce((prev, crr) => prev + crr.points, 0);
 
@@ -76,9 +84,10 @@ export default function App() {
 					<>
 						<ProgressBar index={index} numQuestions={numQuestions} answer={answer} scores={scores} totalScores={totalScores} />
 						<Question question={questions[index]} answer={answer} dispatch={dispatch} />
-						<NextButton dispatch={dispatch} answer={answer} />
+						<NextButton dispatch={dispatch} answer={answer} index={index} numQuestions={numQuestions} />
 					</>
 				)}
+				{status === 'finished' && <FinishedScreen scores={scores} totalScores={totalScores} highScore={highScore} />}
 			</Main>
 		</div>
 	);
