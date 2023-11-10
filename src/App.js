@@ -6,6 +6,7 @@ import Error from './components/Error';
 import StartScreen from './components/quiz/StartScreen';
 import Question from './components/quiz/Question';
 import NextButton from './components/quiz/NextButton';
+import ProgressBar from './components/quiz/ProgressBar';
 
 const initialState = {
 	questions: [],
@@ -52,8 +53,9 @@ function reducer(state, action) {
 }
 
 export default function App() {
-	const [{ questions, status, index, answer }, dispatch] = useReducer(reducer, initialState);
+	const [{ questions, status, index, answer, scores }, dispatch] = useReducer(reducer, initialState);
 	const numQuestions = questions.length;
+	const totalScores = questions.reduce((prev, crr) => prev + crr.points, 0);
 
 	useEffect(() => {
 		fetch('http://localhost:9000/questions')
@@ -72,6 +74,7 @@ export default function App() {
 				{status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
 				{status === 'active' && (
 					<>
+						<ProgressBar index={index} numQuestions={numQuestions} answer={answer} scores={scores} totalScores={totalScores} />
 						<Question question={questions[index]} answer={answer} dispatch={dispatch} />
 						<NextButton dispatch={dispatch} answer={answer} />
 					</>
