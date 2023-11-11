@@ -9,6 +9,9 @@ import NextButton from './components/quiz/NextButton';
 import ProgressBar from './components/quiz/ProgressBar';
 import FinishedScreen from './components/quiz/FinishedScreen';
 import Timer from './components/quiz/Timer';
+import Exit from './components/quiz/Exit';
+import PreviousButton from './components/quiz/PreviousButton';
+import ButtonGroup from './components/ButtonGroup';
 
 const SEC_PER_QUESTION = 30;
 const initialState = {
@@ -16,6 +19,7 @@ const initialState = {
 	status: 'loading', // error, ready, active, finished
 	index: 0,
 	answer: null,
+	answers: [],
 	scores: 0,
 	highScore: JSON.parse(localStorage.getItem('highScore')) ?? 0,
 	remainingTime: null,
@@ -46,12 +50,19 @@ function reducer(state, action) {
 				...state,
 				answer: action.payload,
 				scores: action.payload === currentQuestion.correctOption ? state.scores + currentQuestion.points : state.scores,
+				answers: [...state.answers, action.payload],
+			};
+		case 'prevQuestion':
+			return {
+				...state,
+				index: state.index - 1,
+				answer: state.answers[state.index - 1],
 			};
 		case 'nextQuestion':
 			return {
 				...state,
 				index: state.index + 1,
-				answer: null,
+				answer: state.index + 1 < state.answers.length ? state.answers[state.index + 1] : null,
 			};
 		case 'finishQuiz':
 			const highScore = state.scores >= state.highScore ? state.scores : state.highScore;
@@ -98,7 +109,7 @@ export default function App() {
 			<Main>
 				{status === 'loading' && <Loader />}
 				{status === 'error' && <Error />}
-				{status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
+				{status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} highScore={highScore} />}
 
 				{status === 'active' && (
 					<>
@@ -106,10 +117,15 @@ export default function App() {
 
 						<Question question={questions[index]} answer={answer} dispatch={dispatch} />
 
-						<div>
-							<Timer dispatch={dispatch} remainingTime={remainingTime} />
+						<ButtonGroup>
+							<PreviousButton dispatch={dispatch} index={index} />
 							<NextButton dispatch={dispatch} answer={answer} index={index} numQuestions={numQuestions} />
-						</div>
+						</ButtonGroup>
+
+						<ButtonGroup className="footer">
+							<Exit dispatch={dispatch} />
+							<Timer dispatch={dispatch} remainingTime={remainingTime} />
+						</ButtonGroup>
 					</>
 				)}
 

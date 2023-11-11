@@ -11,10 +11,10 @@ export default function Timer({ dispatch, remainingTime }) {
 	}, [dispatch]);
 
 	return (
-		<div className="timer">
+		<span className="outline-rounded">
 			{mins < 10 && '0'}
 			{mins} : {seconds < 10 && '0'}
 			{seconds}
-		</div>
+		</span>
 	);
 }

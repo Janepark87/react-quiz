@@ -87,6 +87,10 @@ h4 {
 	margin-bottom: 2.4rem;
 }
 
+.mx-auto {
+	margin: 0 auto;
+}
+
 .start {
 	display: flex;
 	flex-direction: column;
@@ -146,8 +150,18 @@ progress {
 	cursor: not-allowed;
 }
 
-.btn-ui {
+.btn-group {
+	margin-bottom: 1.5rem;
+}
+
+.float-right {
 	float: right;
+	clear: right;
+}
+
+.float-left {
+	float: left;
+	clear: left;
 }
 
 .options {
@@ -197,7 +211,7 @@ progress {
 .highscore {
 	font-size: 1.8rem;
 	text-align: center;
-	margin-bottom: 4.8rem;
+	margin-bottom: 5rem;
 }
 
 .loader-container {
@@ -211,13 +225,21 @@ progress {
 	font-size: 1.4rem;
 }
 
-.timer {
-	float: left;
+.outline-rounded {
 	font-size: 1.8rem;
 	color: var(--color-medium);
 	border: 2px solid var(--color-dark);
 	padding: 1.35rem 2.8rem;
 	border-radius: 100px;
+}
+
+.footer {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 12rem;
+	padding: 2rem;
+	border-radius: 1rem;
+	border: 1px solid var(--color-dark);
 }
 
 /* CREDIT: https://dev.to/afif/i-made-100-css-loaders-for-your-next-project-4eje */

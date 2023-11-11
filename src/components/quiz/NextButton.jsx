@@ -3,7 +3,7 @@ export default function NextButton({ dispatch, answer, index, numQuestions }) {
 	const isLastQuestion = index + 1 === numQuestions;
 
 	return (
-		<button className="btn btn-ui" onClick={() => dispatch({ type: isLastQuestion ? 'finishQuiz' : 'nextQuestion' })}>
+		<button className="btn float-right" onClick={() => dispatch({ type: isLastQuestion ? 'finishQuiz' : 'nextQuestion' })}>
 			{isLastQuestion ? 'Finish Quiz' : 'Next'}
 		</button>
 	);

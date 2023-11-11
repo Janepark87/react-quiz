@@ -1,9 +1,12 @@
-export default function StartScreen({ numQuestions, dispatch }) {
+export default function StartScreen({ numQuestions, dispatch, highScore }) {
 	return (
 		<div className="start">
 			<h2>Welcome to The React Quiz!</h2>
 			<h3>{numQuestions} questions to test your React mastery</h3>
-			<button className="btn btn-ui" onClick={() => dispatch({ type: 'start' })}>
+
+			<span className="outline-rounded highscore">Hight Score: {highScore}</span>
+
+			<button className="btn" onClick={() => dispatch({ type: 'start' })}>
 				Let's start
 			</button>
 		</div>

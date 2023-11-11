@@ -19,7 +19,7 @@ export default function FinishedScreen({ scores, totalScores, highScore, dispatc
 				{highScore <= scores && highScore !== 0 ? 'New' : ''} High Score: {highScore} points
 			</p>
 
-			<button className="btn btn-ui" onClick={() => dispatch({ type: 'restart' })}>
+			<button className="btn mx-auto" onClick={() => dispatch({ type: 'restart' })}>
 				Restart Quiz
 			</button>
 		</>
