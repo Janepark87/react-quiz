@@ -14,7 +14,10 @@ export default function FinishedScreen({ scores, totalScores, highScore, dispatc
 				<span>{emoji}</span>
 				You scored <strong>{scores}</strong> out of {totalScores} ({Math.ceil(percentage)}%)
 			</p>
-			<p className="highscore">(High Score: {highScore} points)</p>
+
+			<p className="highscore">
+				{highScore <= scores && highScore !== 0 ? 'New' : ''} High Score: {highScore} points
+			</p>
 
 			<button className="btn btn-ui" onClick={() => dispatch({ type: 'restart' })}>
 				Restart Quiz

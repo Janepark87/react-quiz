@@ -17,7 +17,7 @@ const initialState = {
 	index: 0,
 	answer: null,
 	scores: 0,
-	highScore: 0,
+	highScore: JSON.parse(localStorage.getItem('highScore')) ?? 0,
 	remainingTime: null,
 };
 
@@ -54,16 +54,19 @@ function reducer(state, action) {
 				answer: null,
 			};
 		case 'finishQuiz':
+			const highScore = state.scores >= state.highScore ? state.scores : state.highScore;
+			localStorage.setItem('highScore', JSON.stringify(highScore));
 			return {
 				...state,
 				status: 'finished',
-				hightScore: state.highScore === 0 ? Math.max(state.scores, state.highScore) : state.highScore,
+				highScore,
 			};
 		case 'restart':
 			return {
 				...initialState,
 				questions: state.questions,
 				status: 'ready',
+				highScore: state.highScore,
 			};
 		case 'timer':
 			return {
@@ -96,6 +99,7 @@ export default function App() {
 				{status === 'loading' && <Loader />}
 				{status === 'error' && <Error />}
 				{status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
+
 				{status === 'active' && (
 					<>
 						<ProgressBar index={index} numQuestions={numQuestions} answer={answer} scores={scores} totalScores={totalScores} />
@@ -108,6 +112,7 @@ export default function App() {
 						</div>
 					</>
 				)}
+
 				{status === 'finished' && <FinishedScreen scores={scores} totalScores={totalScores} highScore={highScore} dispatch={dispatch} />}
 			</Main>
 		</div>
