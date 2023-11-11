@@ -57,7 +57,7 @@ function reducer(state, action) {
 			return {
 				...state,
 				status: 'finished',
-				highScore: state.scores > state.highScore ? state.scores : state.highScore,
+				hightScore: state.highScore === 0 ? Math.max(state.scores, state.highScore) : state.highScore,
 			};
 		case 'restart':
 			return {
