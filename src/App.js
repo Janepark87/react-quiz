@@ -104,12 +104,15 @@ function reducer(state, action) {
 }
 
 export default function App() {
-	const [{ questions, status, index, answer, scores, highScore, remainingTime, difficulty, filterQuestions }, dispatch] = useReducer(reducer, initialState);
+	const [{ status, index, answer, scores, highScore, remainingTime, difficulty, filterQuestions }, dispatch] = useReducer(reducer, initialState);
 	const numQuestions = filterQuestions.length;
 	const totalScores = filterQuestions.reduce((prev, crr) => prev + crr.points, 0);
 
 	useEffect(() => {
-		fetch('http://localhost:9000/questions')
+		const API_URL = process.env.REACT_APP_API_URL;
+		const apiEnviromentMode = process.env.NODE_ENV === 'production' ? `${API_URL}/questions.json` : `${API_URL}/questions`;
+
+		fetch(apiEnviromentMode)
 			.then((res) => res.json())
 			.then((data) => dispatch({ type: 'dataReceived', payload: data }))
 			.catch((err) => dispatch({ type: 'dataFailed' }));
@@ -128,7 +131,7 @@ export default function App() {
 					<>
 						<ProgressBar index={index} numQuestions={numQuestions} answer={answer} scores={scores} totalScores={totalScores} />
 
-						<Question question={questions[index]} answer={answer} dispatch={dispatch} />
+						<Question question={filterQuestions[index]} answer={answer} dispatch={dispatch} />
 
 						<ButtonGroup>
 							<PreviousButton dispatch={dispatch} index={index} />
