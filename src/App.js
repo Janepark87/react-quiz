@@ -16,6 +16,7 @@ import ButtonGroup from './components/ButtonGroup';
 const SEC_PER_QUESTION = 30;
 const initialState = {
 	questions: [],
+	filterQuestions: [],
 	status: 'loading', // error, ready, active, finished
 	index: 0,
 	answer: null,
@@ -23,6 +24,7 @@ const initialState = {
 	scores: 0,
 	highScore: JSON.parse(localStorage.getItem('highScore')) ?? 0,
 	remainingTime: null,
+	difficulty: 'all',
 };
 
 function reducer(state, action) {
@@ -30,8 +32,9 @@ function reducer(state, action) {
 		case 'dataReceived':
 			return {
 				...state,
-				questions: action.payload,
 				status: 'ready',
+				questions: action.payload,
+				filterQuestions: action.payload,
 			};
 		case 'dataFailed':
 			return {
@@ -42,10 +45,10 @@ function reducer(state, action) {
 			return {
 				...state,
 				status: 'active',
-				remainingTime: state.questions.length * SEC_PER_QUESTION,
+				remainingTime: state.filterQuestions.length * SEC_PER_QUESTION,
 			};
 		case 'newAnswer':
-			const currentQuestion = state.questions.at(state.index);
+			const currentQuestion = state.filterQuestions.at(state.index);
 			return {
 				...state,
 				answer: action.payload,
@@ -75,9 +78,11 @@ function reducer(state, action) {
 		case 'restart':
 			return {
 				...initialState,
-				questions: state.questions,
 				status: 'ready',
+				questions: state.questions,
+				filterQuestions: state.filterQuestions,
 				highScore: state.highScore,
+				difficulty: state.difficulty,
 			};
 		case 'timer':
 			return {
@@ -85,15 +90,23 @@ function reducer(state, action) {
 				remainingTime: state.remainingTime - 1,
 				status: state.remainingTime === 0 ? 'finished' : state.status,
 			};
+		case 'setDifficulty':
+			const filteredQuestions = state.questions.filter((question) => question.difficulty === action.payload);
+
+			return {
+				...state,
+				difficulty: action.payload,
+				filterQuestions: action.payload === 'all' ? state.questions : filteredQuestions,
+			};
 		default:
 			throw new Error('Error: unknown action');
 	}
 }
 
 export default function App() {
-	const [{ questions, status, index, answer, scores, highScore, remainingTime }, dispatch] = useReducer(reducer, initialState);
-	const numQuestions = questions.length;
-	const totalScores = questions.reduce((prev, crr) => prev + crr.points, 0);
+	const [{ questions, status, index, answer, scores, highScore, remainingTime, difficulty, filterQuestions }, dispatch] = useReducer(reducer, initialState);
+	const numQuestions = filterQuestions.length;
+	const totalScores = filterQuestions.reduce((prev, crr) => prev + crr.points, 0);
 
 	useEffect(() => {
 		fetch('http://localhost:9000/questions')
@@ -109,7 +122,7 @@ export default function App() {
 			<Main>
 				{status === 'loading' && <Loader />}
 				{status === 'error' && <Error />}
-				{status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} highScore={highScore} />}
+				{status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} highScore={highScore} difficulty={difficulty} />}
 
 				{status === 'active' && (
 					<>
