@@ -30,11 +30,12 @@ const initialState = {
 function reducer(state, action) {
 	switch (action.type) {
 		case 'dataReceived':
+			const receivedQuestions = process.env.NODE_ENV === 'production' ? action.payload.questions : action.payload;
 			return {
 				...state,
 				status: 'ready',
-				questions: action.payload,
-				filterQuestions: action.payload,
+				questions: receivedQuestions,
+				filterQuestions: receivedQuestions,
 			};
 		case 'dataFailed':
 			return {
@@ -106,19 +107,22 @@ function reducer(state, action) {
 export default function App() {
 	const [{ status, index, answer, scores, highScore, remainingTime, difficulty, filterQuestions }, dispatch] = useReducer(reducer, initialState);
 	const numQuestions = filterQuestions.length;
-	const totalScores = Array.isArray(filterQuestions) ? filterQuestions.reduce((prev, crr) => prev + crr.points, 0) : 0;
+	const totalScores = filterQuestions.reduce((prev, crr) => prev + crr.points, 0);
 
 	useEffect(() => {
-		const API_URL = process.env.REACT_APP_API_URL;
-		const apiEnvironmentMode = process.env.NODE_ENV === 'production' ? `${API_URL}/questions.json` : `${API_URL}/questions`;
-
-		fetch(apiEnvironmentMode)
-			.then((res) => res.json())
-			.then((data) => {
-				console.log('Fetched Data:', data);
+		const fetchData = async () => {
+			try {
+				const API_URL = process.env.REACT_APP_API_URL;
+				const apiEnvironmentMode = process.env.NODE_ENV === 'production' ? `${API_URL}/questions.json` : `${API_URL}/questions`;
+				const data = await (await fetch(apiEnvironmentMode)).json();
 				dispatch({ type: 'dataReceived', payload: data });
-			})
-			.catch(() => dispatch({ type: 'dataFailed' }));
+			} catch (error) {
+				console.error('Error fetching data:', error);
+				dispatch({ type: 'dataFailed' });
+			}
+		};
+
+		fetchData();
 	}, []);
 
 	return (
