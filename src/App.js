@@ -106,7 +106,7 @@ function reducer(state, action) {
 export default function App() {
 	const [{ status, index, answer, scores, highScore, remainingTime, difficulty, filterQuestions }, dispatch] = useReducer(reducer, initialState);
 	const numQuestions = filterQuestions.length;
-	const totalScores = filterQuestions.reduce((prev, crr) => prev + crr.points, 0);
+	const totalScores = Array.isArray(filterQuestions) ? filterQuestions.reduce((prev, crr) => prev + crr.points, 0) : 0;
 
 	useEffect(() => {
 		const API_URL = process.env.REACT_APP_API_URL;
@@ -114,8 +114,11 @@ export default function App() {
 
 		fetch(apiEnvironmentMode)
 			.then((res) => res.json())
-			.then((data) => dispatch({ type: 'dataReceived', payload: data }))
-			.catch((err) => dispatch({ type: 'dataFailed' }));
+			.then((data) => {
+				console.log('Fetched Data:', data);
+				dispatch({ type: 'dataReceived', payload: data });
+			})
+			.catch(() => dispatch({ type: 'dataFailed' }));
 	}, []);
 
 	return (
