@@ -110,9 +110,9 @@ export default function App() {
 
 	useEffect(() => {
 		const API_URL = process.env.REACT_APP_API_URL;
-		const apiEnviromentMode = process.env.NODE_ENV === 'production' ? `${API_URL}/questions.json` : `${API_URL}/questions`;
+		const apiEnvironmentMode = process.env.NODE_ENV === 'production' ? `${API_URL}/questions.json` : `${API_URL}/questions`;
 
-		fetch(apiEnviromentMode)
+		fetch(apiEnvironmentMode)
 			.then((res) => res.json())
 			.then((data) => dispatch({ type: 'dataReceived', payload: data }))
 			.catch((err) => dispatch({ type: 'dataFailed' }));
