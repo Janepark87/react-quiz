@@ -1,6 +1,9 @@
+import { useQuiz } from '../../contexts/QuizContext';
 import SelectEntryLevel from './SelectEntryLevel';
 
-export default function StartScreen({ numQuestions, dispatch, highScore, difficulty }) {
+export default function StartScreen() {
+	const { numQuestions, dispatch, highScore } = useQuiz();
+
 	return (
 		<div className="start">
 			<h2>Welcome to The React Quiz!</h2>
@@ -8,7 +11,7 @@ export default function StartScreen({ numQuestions, dispatch, highScore, difficu
 
 			<span className="outline-rounded highscore">Hight Score: {highScore}</span>
 
-			<SelectEntryLevel dispatch={dispatch} difficulty={difficulty} />
+			<SelectEntryLevel />
 
 			<button className="btn" onClick={() => dispatch({ type: 'start' })}>
 				Let's start

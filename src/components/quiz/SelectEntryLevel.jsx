@@ -1,4 +1,8 @@
-export default function SelectEntryLevel({ dispatch, difficulty }) {
+import { useQuiz } from '../../contexts/QuizContext';
+
+export default function SelectEntryLevel() {
+	const { dispatch, difficulty } = useQuiz();
+
 	return (
 		<select
 			id="entryLevel"
