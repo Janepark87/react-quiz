@@ -4,8 +4,8 @@ import { useQuiz } from '../../contexts/QuizContext';
 export default function Timer() {
 	const { dispatch, remainingTime } = useQuiz();
 
-	const mins = Math.floor(remainingTime / 60);
-	const seconds = remainingTime % 60;
+	const mins = String(Math.floor(remainingTime / 60)).padStart(2, '0');
+	const seconds = String(remainingTime % 60).padStart(2, '0');
 
 	useEffect(() => {
 		const interval = setInterval(() => dispatch({ type: 'timer' }), 1000);
@@ -15,9 +15,7 @@ export default function Timer() {
 
 	return (
 		<span className="outline-rounded">
-			{mins < 10 && '0'}
-			{mins} : {seconds < 10 && '0'}
-			{seconds}
+			{mins} : {seconds}
 		</span>
 	);
 }
